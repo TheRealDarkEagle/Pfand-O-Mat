@@ -7,15 +7,14 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import logic.Property;
-import logic.StateListener;
+import control.PropertyHandler;
+import control.listener.StateListener;
 import view.Screen;
 
-public class StartPanel extends JPanel implements Panel {
+public class StartPanel extends JPanel implements IPanel {
 
 	private JButton flasche;
 	private JButton lang;
-	private JButton bon;
 	private Screen frame;
 	private GridBagLayout layout;
 	private GridBagConstraints c;
@@ -29,6 +28,8 @@ public class StartPanel extends JPanel implements Panel {
 	}
 
 	private void init() {
+		this.setSize(500, 500);
+		this.setBackground(Color.GRAY);
 		listener = new StateListener(frame);
 		layout = new GridBagLayout();
 		c = new GridBagConstraints();
@@ -36,16 +37,13 @@ public class StartPanel extends JPanel implements Panel {
 	}
 
 	private void config() {
-		flasche = new JButton(Property.getLanguage().getProperty(frame.getLanguage() + ".abgeben"));
-		lang = new JButton(Property.getLanguage().getProperty(frame.getLanguage() + ".sprache"));
-		bon = new JButton(Property.getLanguage().getProperty(frame.getLanguage() + ".pfandbon"));
+		flasche = new JButton(PropertyHandler.getLanguage().getProperty(frame.getLanguage() + ".abgeben"));
+		lang = new JButton(PropertyHandler.getLanguage().getProperty(frame.getLanguage() + ".sprache"));
 		flasche.setActionCommand("1");
 		lang.setActionCommand("2");
-		bon.setActionCommand("3");
 		addButton(0, 0, 1, 1, flasche);
-		addButton(1, 0, 1, 1, lang);
-		addButton(2, 0, 1, 1, bon);
-		this.setBackground(Color.blue);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		addButton(0, 10, 1, 1, lang);
 
 	}
 

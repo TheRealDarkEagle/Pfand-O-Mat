@@ -10,20 +10,20 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import logic.Property;
-import logic.StateListener;
+import control.BonCalculator;
+import control.PropertyHandler;
+import control.listener.StateListener;
 import view.Screen;
 
-public class FlaschenAbgabe extends JPanel implements Panel {
+public class FlaschenAbgabe extends JPanel implements IPanel {
 
 	private GridBagConstraints c;
 	private GridBagLayout layout;
 	private Screen frame;
 	private String lang;
-	private JButton pfand;
 	private JLabel label;
-	private JButton back;
 	private StateListener state;
+	private BonCalculator bc;
 
 	public FlaschenAbgabe(Screen frame) {
 		System.out.println("flasche abgeben");
@@ -32,26 +32,27 @@ public class FlaschenAbgabe extends JPanel implements Panel {
 		config();
 	}
 
+	public void setPfand(double amount) {
+		this.label.setText(PropertyHandler.getLanguage().getProperty(lang + ".pfand") + ": " + amount + "€");
+	}
+
 	private void init() {
+		label = new JLabel(PropertyHandler.getLanguage().getProperty(lang + ".pfand") + ":");
 		state = new StateListener(frame);
 		c = new GridBagConstraints();
 		layout = new GridBagLayout();
 		lang = frame.getLanguage();
-		back = new JButton(Property.getLanguage().getProperty(lang + ".zurück"));
-		pfand = new JButton(Property.getLanguage().getProperty(lang + ".pfandbon"));
-		label = new JLabel(Property.getLanguage().getProperty(lang + ".pfand") + ":");
+		bc = new BonCalculator(this);
 	}
 
 	private void config() {
 		c.fill = GridBagConstraints.BOTH;
 		this.setLayout(layout);
-		addButton(11, 1, 1, 1, new JButton(Property.getLanguage().getProperty(lang + ".plastik")));
-		addButton(11, 4, 1, 1, new JButton(Property.getLanguage().getProperty(lang + ".glas")));
-		addButton(11, 7, 1, 1, new JButton(Property.getLanguage().getProperty(lang + ".dose")));
-		addButton(15, 15, 4, 1, pfand);
+		addButton(11, 1, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".plastik")));
+		addButton(11, 4, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".glas")));
+		addButton(11, 7, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".dose")));
 		addComponents(5, 12, 0, 0, label);
 		addComponents(0, 0, 9, 9, new JLabel(new ImageIcon("src/resources/pfandautomat.jpg")));
-		configBackBtn();
 		this.setBackground(Color.green);
 	}
 
@@ -63,17 +64,9 @@ public class FlaschenAbgabe extends JPanel implements Panel {
 		this.add(component, c);
 	}
 
-	private void configBackBtn() {
-		back.addActionListener(state);
-		back.setActionCommand("0");
-		c.gridx = 30;
-		c.gridy = 30;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		this.add(back, c);
-	}
-
 	@Override
 	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button) {
+		button.addActionListener(bc);
 		c.gridx = x;
 		c.gridy = y;
 		c.gridheight = gridHeight;

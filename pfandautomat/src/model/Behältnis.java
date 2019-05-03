@@ -1,22 +1,22 @@
 package model;
 
-public class Flasche implements Flaschen {
+public class Behältnis implements Flaschen {
 
 	private double pfand;
 	private String brand;
 	private double vol;
 
-	public Flasche(double pfand, String brand, double vol) {
+	public Behältnis(double pfand, String brand, double vol) {
 		this.pfand = pfand;
 		this.brand = brand;
 		this.vol = vol;
 	}
 
-	public Flasche(boolean handle, String brand, double vol) {
+	public Behältnis(boolean handle, String brand, double vol) {
 		if (handle) {
-			this.pfand = 0.16;
+			this.pfand = MIN * 2;
 		} else {
-			this.pfand = 0.08;
+			this.pfand = MIN;
 		}
 		this.brand = brand;
 		this.vol = vol;

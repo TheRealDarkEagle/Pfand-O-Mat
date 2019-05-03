@@ -1,4 +1,4 @@
-package logic;
+package control;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;

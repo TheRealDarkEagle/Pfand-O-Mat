@@ -12,11 +12,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import logic.LanguageListener;
-import logic.Property;
+import control.PropertyHandler;
+import control.listener.LanguageListener;
 import view.Screen;
 
-public class ChooseLanguage extends JPanel implements Panel {
+public class ChooseLanguage extends JPanel implements IPanel {
 
 	private Screen frame;
 	private GridBagConstraints c;
@@ -41,15 +41,15 @@ public class ChooseLanguage extends JPanel implements Panel {
 
 	private void config() {
 		c.fill = GridBagConstraints.BOTH;
-		Properties prop = Property.getFlags();
+		Properties prop = PropertyHandler.getFlags();
 		Enumeration e = prop.propertyNames();
 		int x, y;
 		x = y = 0;
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
 			try {
-				addButton(x, y, 1, 1, new JButton(Property.getLanguage().getProperty(name), new ImageIcon(
-						ImageIO.read(this.getClass().getResource(Property.getFlags().getProperty(name))))));
+				addButton(x, y, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(name), new ImageIcon(
+						ImageIO.read(this.getClass().getResource(PropertyHandler.getFlags().getProperty(name))))));
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

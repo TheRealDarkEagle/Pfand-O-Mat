@@ -1,9 +1,9 @@
 package model;
 
-public class Plastik extends Flasche {
+public class Plastik extends Behältnis {
 
 	public Plastik(String brand, double vol) {
-		super(0.25, brand, vol);
+		super(MAX, brand, vol);
 	}
 
 }

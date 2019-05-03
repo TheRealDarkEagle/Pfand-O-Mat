@@ -1,8 +1,9 @@
-package logic;
+package control.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import control.PfandOMat;
 import view.Screen;
 import view.panels.ChooseLanguage;
 import view.panels.FlaschenAbgabe;
@@ -11,6 +12,9 @@ import view.panels.StartPanel;
 public class StateListener implements ActionListener {
 
 	private Screen frame;
+	private StartPanel start;
+	private FlaschenAbgabe flAbgabe;
+	private ChooseLanguage lang;
 
 	public StateListener(Screen frame) {
 		this.frame = frame;
@@ -40,6 +44,11 @@ public class StateListener implements ActionListener {
 			break;
 		case "3":
 //			frame.exchangeStatePanel(panel);
+			break;
+		case "99":
+			frame.dispose();
+			new PfandOMat();
+			frame = new Screen();
 			break;
 		}
 	}

@@ -1,9 +1,9 @@
 package model;
 
-public class Dose extends Flasche {
+public class Dose extends Behältnis {
 
 	public Dose(String brand, double vol) {
-		super(0.25, brand, vol);
+		super(MAX, brand, vol);
 	}
 
 }

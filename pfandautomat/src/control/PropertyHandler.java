@@ -1,4 +1,4 @@
-package logic;
+package control;
 
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -6,7 +6,7 @@ import java.util.Random;
 
 import resources.PropertyPath;
 
-public class Property {
+public class PropertyHandler {
 
 	private static Properties loadProperty(String path) {
 		try (FileInputStream input = new FileInputStream(path)) {
