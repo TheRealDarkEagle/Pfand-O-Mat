@@ -1,6 +1,6 @@
 package model;
 
-public interface Flaschen {
+public interface ILiquidContainer {
 
 	double MIN = 0.08;
 	double MAX = 0.25;

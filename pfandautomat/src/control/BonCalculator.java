@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 
-import model.Behältnis;
+import model.Behaeltnis;
 import model.Dose;
 import model.Glas;
 import model.PfandBon;
@@ -26,15 +26,19 @@ public class BonCalculator implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Behältnis f = createFlasche(e.getActionCommand());
+		if (e.getActionCommand().contains("bon")) {
+			return;
+		}
+		Behaeltnis f = createFlasche(e.getActionCommand());
 		double amount = f.getPfand();
 		calculatePfand(amount);
+		pfandBon.addBottle(f);
 	}
 
-	private Behältnis createFlasche(String type) {
+	private Behaeltnis createFlasche(String type) {
 		String key = getKey(type); // von value auf key schließen
 		key = key.substring(key.indexOf('.') + 1).toLowerCase();
-		Behältnis f = null;
+		Behaeltnis f = null;
 		if (key.equalsIgnoreCase("plastik")) {
 			f = new Plastik(
 					FlaschenCreator.getRndBrand(PropertyHandler.getBrand(),

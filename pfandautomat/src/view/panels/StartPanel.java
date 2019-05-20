@@ -21,6 +21,7 @@ public class StartPanel extends JPanel implements IPanel {
 	private StateListener listener;
 
 	public StartPanel(Screen frame) {
+		this.setBackground(Color.yellow);
 		System.out.println("startpanel");
 		this.frame = frame;
 		init();
@@ -28,8 +29,7 @@ public class StartPanel extends JPanel implements IPanel {
 	}
 
 	private void init() {
-		this.setSize(500, 500);
-		this.setBackground(Color.GRAY);
+//		this.setSize(500, 500);
 		listener = new StateListener(frame);
 		layout = new GridBagLayout();
 		c = new GridBagConstraints();
@@ -41,9 +41,10 @@ public class StartPanel extends JPanel implements IPanel {
 		lang = new JButton(PropertyHandler.getLanguage().getProperty(frame.getLanguage() + ".sprache"));
 		flasche.setActionCommand("1");
 		lang.setActionCommand("2");
+		c.fill = GridBagConstraints.BOTH;
 		addButton(0, 0, 1, 1, flasche);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		addButton(0, 10, 1, 1, lang);
+		addButton(1, 0, 1, 1, lang);
 
 	}
 

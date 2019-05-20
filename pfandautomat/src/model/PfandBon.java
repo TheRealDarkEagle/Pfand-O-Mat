@@ -1,10 +1,21 @@
 package model;
 
+import java.util.ArrayList;
+
 public class PfandBon {
 
-	private static PfandBon pfandbon = new PfandBon();
+	ArrayList<Behaeltnis> bon = new ArrayList<>();
+
+	private static PfandBon pfandbon_instance;
 
 	private double pfand;
+
+	public static PfandBon getInstance() {
+		if (pfandbon_instance == null) {
+			pfandbon_instance = new PfandBon();
+		}
+		return pfandbon_instance;
+	}
 
 	private PfandBon() {
 		pfand = 0.0;
@@ -18,8 +29,12 @@ public class PfandBon {
 		this.pfand = amount;
 	}
 
-	public static PfandBon getInstance() {
-		return pfandbon;
+	public void resetPfand() {
+		this.pfand = 0.0;
+	}
+
+	public void addBottle(Behaeltnis bottle) {
+		this.bon.add(bottle);
 	}
 
 }

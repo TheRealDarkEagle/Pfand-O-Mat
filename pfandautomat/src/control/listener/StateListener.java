@@ -3,7 +3,8 @@ package control.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import control.PfandOMat;
+import model.PfandBon;
+import pfandomatexe.PfandOMat;
 import view.Screen;
 import view.panels.ChooseLanguage;
 import view.panels.FlaschenAbgabe;
@@ -47,6 +48,7 @@ public class StateListener implements ActionListener {
 			break;
 		case "99":
 			frame.dispose();
+			PfandBon.getInstance().resetPfand();
 			new PfandOMat();
 			frame = new Screen();
 			break;

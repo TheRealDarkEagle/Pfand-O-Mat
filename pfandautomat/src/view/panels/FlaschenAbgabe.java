@@ -1,6 +1,5 @@
 package view.panels;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,6 +12,7 @@ import javax.swing.JPanel;
 import control.BonCalculator;
 import control.PropertyHandler;
 import control.listener.StateListener;
+import model.BonNote;
 import view.Screen;
 
 public class FlaschenAbgabe extends JPanel implements IPanel {
@@ -24,6 +24,7 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 	private JLabel label;
 	private StateListener state;
 	private BonCalculator bc;
+	private JButton pfandBon;
 
 	public FlaschenAbgabe(Screen frame) {
 		System.out.println("flasche abgeben");
@@ -43,6 +44,7 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 		layout = new GridBagLayout();
 		lang = frame.getLanguage();
 		bc = new BonCalculator(this);
+		pfandBon = new JButton(PropertyHandler.getLanguage().getProperty(lang + ".bon"));
 	}
 
 	private void config() {
@@ -53,7 +55,14 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 		addButton(11, 7, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".dose")));
 		addComponents(5, 12, 0, 0, label);
 		addComponents(0, 0, 9, 9, new JLabel(new ImageIcon("src/resources/pfandautomat.jpg")));
-		this.setBackground(Color.green);
+		pfandBon.setActionCommand("bon");
+		pfandBon.addActionListener(e -> {
+			frame.setVisible(false);
+			frame.remove(this);
+			frame.add(new BonNote());
+			frame.setVisible(true);
+		});
+		this.addButton(30, 30, 0, 1, pfandBon);
 	}
 
 	private void addComponents(int x, int y, int gridHeight, int gridWidth, Component component) {

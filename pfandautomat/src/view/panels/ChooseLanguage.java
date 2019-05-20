@@ -20,7 +20,6 @@ public class ChooseLanguage extends JPanel implements IPanel {
 
 	private Screen frame;
 	private GridBagConstraints c;
-	private GridBagLayout layout;
 	private LanguageListener listener;
 
 	public ChooseLanguage(Screen frame) {
@@ -34,8 +33,7 @@ public class ChooseLanguage extends JPanel implements IPanel {
 		this.setSize(500, 500);
 		listener = new LanguageListener(frame);
 		c = new GridBagConstraints();
-		layout = new GridBagLayout();
-		this.setLayout(layout);
+		this.setLayout(new GridBagLayout());
 
 	}
 
