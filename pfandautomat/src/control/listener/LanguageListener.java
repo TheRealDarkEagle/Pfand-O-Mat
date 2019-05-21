@@ -21,7 +21,7 @@ public class LanguageListener implements ActionListener {
 
 	private void changeLang(String lang) {
 		frame.setLanguage(lang);
-		frame.exchangeStatePanel(new StartPanel(frame));
+		frame.exchangeStatePanel(new StartPanel(frame.getLanguage()));
 		frame.setState(0);
 	}
 }

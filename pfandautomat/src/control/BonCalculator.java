@@ -26,7 +26,7 @@ public class BonCalculator implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().contains("bon")) {
+		if (e.getActionCommand().contains("4")) {
 			return;
 		}
 		Behaeltnis f = createFlasche(e.getActionCommand());

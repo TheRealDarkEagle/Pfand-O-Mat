@@ -22,9 +22,8 @@ public class ChooseLanguage extends JPanel implements IPanel {
 	private GridBagConstraints c;
 	private LanguageListener listener;
 
-	public ChooseLanguage(Screen frame) {
-		System.out.println("sprache auswählen");
-		this.frame = frame;
+	public ChooseLanguage() {
+		this.frame = Screen.getInstance();
 		init();
 		config();
 	}
@@ -46,8 +45,11 @@ public class ChooseLanguage extends JPanel implements IPanel {
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
 			try {
-				addButton(x, y, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(name), new ImageIcon(
-						ImageIO.read(this.getClass().getResource(PropertyHandler.getFlags().getProperty(name))))));
+				addButton(x, y, 1, 1,
+						new JButton(PropertyHandler.getLanguage().getProperty(name),
+								new ImageIcon(ImageIO.read(
+										this.getClass().getResource(PropertyHandler.getFlags().getProperty(name))))),
+						true);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -58,11 +60,13 @@ public class ChooseLanguage extends JPanel implements IPanel {
 	}
 
 	@Override
-	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button) {
+	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button, boolean addActionListener) {
 		button.setPreferredSize(new Dimension(125, 125));
 		button.setMinimumSize(new Dimension(50, 50));
 		button.setMaximumSize(new Dimension(170, 170));
-		button.addActionListener(listener);
+		if (addActionListener) {
+			button.addActionListener(listener);
+		}
 		c.gridx = x;
 		c.gridy = y;
 		this.add(button, c);

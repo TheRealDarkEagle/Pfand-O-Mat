@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import control.BonCalculator;
 import control.PropertyHandler;
 import control.listener.StateListener;
-import model.BonNote;
 import view.Screen;
 
 public class FlaschenAbgabe extends JPanel implements IPanel {
@@ -22,13 +21,11 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 	private Screen frame;
 	private String lang;
 	private JLabel label;
-	private StateListener state;
 	private BonCalculator bc;
 	private JButton pfandBon;
 
-	public FlaschenAbgabe(Screen frame) {
-		System.out.println("flasche abgeben");
-		this.frame = frame;
+	public FlaschenAbgabe() {
+		this.frame = Screen.getInstance();
 		init();
 		config();
 	}
@@ -39,7 +36,6 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 
 	private void init() {
 		label = new JLabel(PropertyHandler.getLanguage().getProperty(lang + ".pfand") + ":");
-		state = new StateListener(frame);
 		c = new GridBagConstraints();
 		layout = new GridBagLayout();
 		lang = frame.getLanguage();
@@ -50,19 +46,17 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 	private void config() {
 		c.fill = GridBagConstraints.BOTH;
 		this.setLayout(layout);
-		addButton(11, 1, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".plastik")));
-		addButton(11, 4, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".glas")));
-		addButton(11, 7, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".dose")));
+		c.weighty = 0.5;
+		addButton(11, 1, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".plastik")), true);
+		addButton(11, 4, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".glas")), true);
+		addButton(11, 7, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".dose")), true);
 		addComponents(5, 12, 0, 0, label);
 		addComponents(0, 0, 9, 9, new JLabel(new ImageIcon("src/resources/pfandautomat.jpg")));
-		pfandBon.setActionCommand("bon");
-		pfandBon.addActionListener(e -> {
-			frame.setVisible(false);
-			frame.remove(this);
-			frame.add(new BonNote());
-			frame.setVisible(true);
-		});
-		this.addButton(30, 30, 0, 1, pfandBon);
+		pfandBon.setActionCommand("4");
+		pfandBon.addActionListener(new StateListener());
+		c.weighty = 0.0;
+		addButton(30, 30, 0, 1, pfandBon, false);
+
 	}
 
 	private void addComponents(int x, int y, int gridHeight, int gridWidth, Component component) {
@@ -74,8 +68,10 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 	}
 
 	@Override
-	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button) {
-		button.addActionListener(bc);
+	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button, boolean addActionListener) {
+		if (addActionListener) {
+			button.addActionListener(bc);
+		}
 		c.gridx = x;
 		c.gridy = y;
 		c.gridheight = gridHeight;

@@ -1,6 +1,6 @@
 package view.panels;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -9,48 +9,49 @@ import javax.swing.JPanel;
 
 import control.PropertyHandler;
 import control.listener.StateListener;
-import view.Screen;
 
 public class StartPanel extends JPanel implements IPanel {
 
 	private JButton flasche;
 	private JButton lang;
-	private Screen frame;
 	private GridBagLayout layout;
 	private GridBagConstraints c;
 	private StateListener listener;
+	private String language;
 
-	public StartPanel(Screen frame) {
-		this.setBackground(Color.yellow);
-		System.out.println("startpanel");
-		this.frame = frame;
+	public StartPanel(String language) {
+		this.language = language;
 		init();
 		config();
 	}
 
 	private void init() {
-//		this.setSize(500, 500);
-		listener = new StateListener(frame);
+		this.setMinimumSize(new Dimension(400, 400));
+		this.setPreferredSize(new Dimension(400, 400));
+		this.setMaximumSize(new Dimension(400, 400));
+		listener = new StateListener();
 		layout = new GridBagLayout();
 		c = new GridBagConstraints();
 		this.setLayout(layout);
 	}
 
 	private void config() {
-		flasche = new JButton(PropertyHandler.getLanguage().getProperty(frame.getLanguage() + ".abgeben"));
-		lang = new JButton(PropertyHandler.getLanguage().getProperty(frame.getLanguage() + ".sprache"));
+		flasche = new JButton(PropertyHandler.getLanguage().getProperty(language + ".abgeben"));
+		lang = new JButton(PropertyHandler.getLanguage().getProperty(language + ".sprache"));
 		flasche.setActionCommand("1");
 		lang.setActionCommand("2");
 		c.fill = GridBagConstraints.BOTH;
-		addButton(0, 0, 1, 1, flasche);
+		addButton(0, 0, 1, 1, flasche, true);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		addButton(1, 0, 1, 1, lang);
+		addButton(1, 0, 1, 1, lang, true);
 
 	}
 
 	@Override
-	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button) {
-		button.addActionListener(listener);
+	public void addButton(int x, int y, int gridHeight, int gridWidth, JButton button, boolean addActionListener) {
+		if (addActionListener) {
+			button.addActionListener(listener);
+		}
 		c.gridx = x;
 		c.gridy = y;
 		c.gridheight = gridHeight;

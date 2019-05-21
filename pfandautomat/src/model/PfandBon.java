@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class PfandBon {
 
-	ArrayList<Behaeltnis> bon = new ArrayList<>();
+	public ArrayList<Behaeltnis> bon = new ArrayList<>();
 
 	private static PfandBon pfandbon_instance;
 
@@ -30,6 +30,7 @@ public class PfandBon {
 	}
 
 	public void resetPfand() {
+		bon = new ArrayList<>();
 		this.pfand = 0.0;
 	}
 
