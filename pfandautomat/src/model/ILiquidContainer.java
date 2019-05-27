@@ -11,4 +11,6 @@ public interface ILiquidContainer {
 
 	double getVol();
 
+	String getArt();
+
 }

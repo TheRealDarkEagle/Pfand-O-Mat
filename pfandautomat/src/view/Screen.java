@@ -3,6 +3,8 @@ package view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +16,12 @@ import view.panels.StartPanel;
 
 public class Screen extends JFrame {
 
-	private static Screen screen_instance;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 7642258153977410674L;
+
+	private static Screen screenInstance;
 
 	private GridBagConstraints c;
 	private JPanel switchtingPanel;
@@ -22,14 +29,15 @@ public class Screen extends JFrame {
 	private String lang;
 	private JButton back;
 	private JButton abbruch;
+	private JButton getPfand;
 	private Dimension dim;
 	private StateListener screenListener;
 
 	public static Screen getInstance() {
-		if (screen_instance == null) {
-			screen_instance = new Screen();
+		if (screenInstance == null) {
+			screenInstance = new Screen();
 		}
-		return screen_instance;
+		return screenInstance;
 	}
 
 	private Screen() {
@@ -58,16 +66,18 @@ public class Screen extends JFrame {
 		back.setActionCommand("0");
 		abbruch.addActionListener(screenListener);
 		abbruch.setActionCommand("99");
+		getPfand = new JButton(PropertyHandler.getLanguage().getProperty(lang + ".erhaltePfand"));
+		getPfand.setActionCommand("3");
+		getPfand.addActionListener(screenListener);
 	}
 
 	private void changeButtonText() {
 		back.setText(PropertyHandler.getLanguage().getProperty(lang + ".zurueck"));
 		abbruch.setText(PropertyHandler.getLanguage().getProperty(lang + ".abbruch"));
+		getPfand.setText(PropertyHandler.getLanguage().getProperty(lang + ".erhaltePfand"));
 	}
 
 	private void addEndPanel() {
-//		endPanel.setForeground(Color.green);
-//		endPanel.setBackground(Color.blue);
 		c.gridwidth = 1;
 		c.weighty = 0.5;
 		c.weightx = 0.5;
@@ -86,9 +96,15 @@ public class Screen extends JFrame {
 		c.gridx = 10;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		endPanel.add(abbruch, c);
+		c.gridx = 20;
+		endPanel.add(getPfand, c);
 	}
 
 	private void build() {
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+		this.addKeyListener(getAdminListener());
+//		this.setResizable(false);
 		this.setTitle("Pfann-O-Mat 2k.9");
 		this.setSize(600, 450);
 		this.setPreferredSize(dim);
@@ -123,6 +139,31 @@ public class Screen extends JFrame {
 		addEndPanel();
 		this.pack();
 		this.setVisible(true);
-
 	}
+
+	private KeyListener getAdminListener() {
+		return new KeyListener() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				System.out.println("Looking for this event: " + KeyEvent.VK_ASTERISK);
+				int key = e.getKeyCode();
+				System.out.println(key);
+				if (key == 521) {
+					Auswertung.getInstance().setVisible(true);
+				}
+			}
+		};
+	}
+
 }

@@ -12,9 +12,10 @@ import control.listener.StateListener;
 
 public class StartPanel extends JPanel implements IPanel {
 
-	private JButton flasche;
-	private JButton lang;
-	private GridBagLayout layout;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 139883265940726890L;
 	private GridBagConstraints c;
 	private StateListener listener;
 	private String language;
@@ -30,12 +31,13 @@ public class StartPanel extends JPanel implements IPanel {
 		this.setPreferredSize(new Dimension(400, 400));
 		this.setMaximumSize(new Dimension(400, 400));
 		listener = new StateListener();
-		layout = new GridBagLayout();
 		c = new GridBagConstraints();
-		this.setLayout(layout);
+		this.setLayout(new GridBagLayout());
 	}
 
 	private void config() {
+		JButton flasche;
+		JButton lang;
 		flasche = new JButton(PropertyHandler.getLanguage().getProperty(language + ".abgeben"));
 		lang = new JButton(PropertyHandler.getLanguage().getProperty(language + ".sprache"));
 		flasche.setActionCommand("1");

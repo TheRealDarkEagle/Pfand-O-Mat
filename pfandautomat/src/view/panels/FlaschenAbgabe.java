@@ -50,13 +50,13 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 		addButton(11, 1, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".plastik")), true);
 		addButton(11, 4, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".glas")), true);
 		addButton(11, 7, 1, 1, new JButton(PropertyHandler.getLanguage().getProperty(lang + ".dose")), true);
+		c.fill = GridBagConstraints.BOTH;
 		addComponents(5, 12, 0, 0, label);
 		addComponents(0, 0, 9, 9, new JLabel(new ImageIcon("src/resources/pfandautomat.jpg")));
 		pfandBon.setActionCommand("4");
 		pfandBon.addActionListener(new StateListener());
 		c.weighty = 0.0;
 		addButton(30, 30, 0, 1, pfandBon, false);
-
 	}
 
 	private void addComponents(int x, int y, int gridHeight, int gridWidth, Component component) {
@@ -64,6 +64,8 @@ public class FlaschenAbgabe extends JPanel implements IPanel {
 		c.gridy = y;
 		c.gridheight = gridHeight;
 		c.gridwidth = gridWidth;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
 		this.add(component, c);
 	}
 

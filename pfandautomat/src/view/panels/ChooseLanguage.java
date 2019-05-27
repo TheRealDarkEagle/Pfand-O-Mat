@@ -39,8 +39,9 @@ public class ChooseLanguage extends JPanel implements IPanel {
 	private void config() {
 		c.fill = GridBagConstraints.BOTH;
 		Properties prop = PropertyHandler.getFlags();
-		Enumeration e = prop.propertyNames();
-		int x, y;
+		Enumeration<?> e = prop.propertyNames();
+		int x;
+		int y;
 		x = y = 0;
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
@@ -51,7 +52,6 @@ public class ChooseLanguage extends JPanel implements IPanel {
 										this.getClass().getResource(PropertyHandler.getFlags().getProperty(name))))),
 						true);
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			x += 10;

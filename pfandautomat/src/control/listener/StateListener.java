@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import model.PfandBon;
+import resources.writer.Writer;
 import view.Screen;
 import view.panels.BonNote;
 import view.panels.ChooseLanguage;
@@ -14,7 +15,11 @@ public class StateListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		exchangeState(e.getActionCommand());
+		if (e.getActionCommand() != "auswertung") {
+			exchangeState(e.getActionCommand());
+		} else {
+
+		}
 
 	}
 
@@ -29,6 +34,12 @@ public class StateListener implements ActionListener {
 			break;
 		case "2":
 			Screen.getInstance().exchangeStatePanel(new ChooseLanguage());
+			break;
+		case "3":
+			Writer writer = new Writer();
+			writer.writeToCSV(PfandBon.getInstance().bon);
+			Screen.getInstance().exchangeStatePanel(new BonNote(lang));
+			PfandBon.getInstance().resetPfand();
 			break;
 		case "4":
 			Screen.getInstance().exchangeStatePanel(new BonNote(lang));
