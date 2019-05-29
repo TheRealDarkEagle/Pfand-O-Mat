@@ -20,15 +20,9 @@ public class Auswertung extends JFrame {
 	 *
 	 */
 	private static final long serialVersionUID = -7668987072300376408L;
-
 	private static Auswertung instance;
-
 	private GridBagConstraints c;
-	private static final String[] attribute = { "ID", "ART", "BRAND", "VOLUMEN", "PAWN" }; // , "ARTS", "BRANDS",
-																							// "VOLUMEN",
-	// "PAWN" <-
-	// weitere
-	// attribute
+	private static final String[] attribute = { "ID", "ART", "BRAND", "VOLUMEN", "PAWN" };
 	private DrawPanel drawArea;
 	private JPanel bar;
 	private JPanel foo;
@@ -51,8 +45,8 @@ public class Auswertung extends JFrame {
 		this.setPreferredSize(new Dimension(1100, 950));
 		this.setMinimumSize(new Dimension(1100, 950));
 		this.setMaximumSize(new Dimension(1100, 950));
-		bar = new JPanel(new GridBagLayout());
-		foo = new JPanel(new GridLayout(1, 0));
+		bar = new JPanel(new GridBagLayout()); // seitliche buttons und drawArea
+		foo = new JPanel(new GridLayout(1, 0)); // Buttons um unteren ende
 		drawArea = DrawPanel.getInstance();
 		c = new GridBagConstraints();
 		this.setLayout(new GridLayout(1, 1));
@@ -69,13 +63,9 @@ public class Auswertung extends JFrame {
 		foo.setBackground(Color.CYAN);
 		JButton exit = new JButton("EXIT");
 		JPanel endButtonPanel = new JPanel(new GridLayout(1, 1));
-		/*
-		 * @TODO: Exit listener überarbeiten! Frame schließt sich nicht durch exit
-		 */
 		exit.addActionListener(e -> {
 			reset();
 			this.dispose();
-			this.setVisible(false);
 		});
 		JButton back = new JButton("BACK");
 		back.addActionListener(e -> {
@@ -120,7 +110,6 @@ public class Auswertung extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(0, 0);
-		this.setVisible(true);
 		pack();
 	}
 
@@ -140,6 +129,7 @@ public class Auswertung extends JFrame {
 	}
 
 	private static void reset() {
+		DrawPanel.reset();
 		instance = new Auswertung();
 	}
 }

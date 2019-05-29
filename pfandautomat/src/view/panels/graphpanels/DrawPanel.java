@@ -29,7 +29,6 @@ public class DrawPanel extends JPanel {
 
 	private Map<String, ArrayList<Behaeltnis>> objectMap;
 	private Reader reader;
-	private int multiplayer = 10;
 
 	public static DrawPanel getInstance() {
 		if (panelInstance == null) {
@@ -45,18 +44,21 @@ public class DrawPanel extends JPanel {
 		this.setMaximumSize(MAX_SIZE);
 		this.reader = new Reader(new Writer().getFilePath());
 		objectMap = reader.getBonObjectMap();
-		int counter = 0;
-		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
-			counter += entry.getValue().size();
+	}
+
+	private void visuellOutput(Map<String, ArrayList<Behaeltnis>> map) {
+		System.out.println("[STARTING MAP OUTPUT");
+		for (Entry<String, ArrayList<Behaeltnis>> entry : map.entrySet()) {
+			System.out.println(entry.getKey());
 			for (Behaeltnis b : entry.getValue()) {
 				System.out.printf("%s %s %s %s %n", b.getArt(), b.getBrand(), b.getVol(), b.getPfand());
 			}
 		}
-		System.out.println(counter);
+		System.out.println("[ENDING] MAP OUTPUT");
 	}
 
 	public void drawID() {
-		drawObject(objectMap, 11);
+		draw(objectMap, 11);
 	}
 
 	public void drawArt() {
@@ -64,13 +66,7 @@ public class DrawPanel extends JPanel {
 		map.put("Plastik", countObjects("plastik"));
 		map.put("GLas", countObjects("glas"));
 		map.put("Dose", countObjects("dose"));
-		drawObject(map, 8);
-	}
-
-	private void drawAmount(int xPos, int yPos, String amount) {
-		Graphics g = getGraphics();
-		g.setColor(Color.yellow);
-		g.drawString(amount, xPos - (3 * amount.length()), yPos - 5);
+		draw(map, 8);
 	}
 
 	public void drawBrand() {
@@ -79,7 +75,7 @@ public class DrawPanel extends JPanel {
 			String item = String.valueOf(entry.getValue());
 			map.put(item, countObjects(item));
 		}
-		drawObject(map, 5);
+		draw(map, 5);
 	}
 
 	public void drawVolumen() {
@@ -88,7 +84,7 @@ public class DrawPanel extends JPanel {
 			String vol = String.valueOf(entry.getValue());
 			map.put(vol, countObjects(vol));
 		}
-		drawObject(map, 13);
+		draw(map, 13);
 	}
 
 	public void drawPawn() {
@@ -100,8 +96,20 @@ public class DrawPanel extends JPanel {
 				map.put(pawn, countObjects(pawn));
 			}
 		}
-//		draw(map, 15);
-		drawObject(map, 15);
+		draw(map, 15);
+	}
+
+	private ArrayList<String> getPawnList() {
+		ArrayList<String> pawns = new ArrayList<>();
+		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
+			for (Behaeltnis s : entry.getValue()) {
+				String pawn = String.valueOf(s.getPfand());
+				if (!pawns.contains(pawn)) {
+					pawns.add(pawn);
+				}
+			}
+		}
+		return pawns;
 	}
 
 	private ArrayList<Behaeltnis> countObjects(String item) {
@@ -119,23 +127,21 @@ public class DrawPanel extends JPanel {
 	/*
 	 * Methode welche den kompletten Graphen zeichnet (summe + graph + id)
 	 */
-	private void drawGraph(int xPos, int yPos, int width, int height, String name, String amount) {
-		Graphics g = getGraphics();
+	private void drawGraph(Graphics g, int xPos, int yPos, int width, int height, String name, String amount) {
 		g.setColor(Color.red);
 		g.fillRect(xPos, yPos - height, width, height);
-		drawName(xPos + (width / 2), yPos, name);
-		drawAmount(xPos + (width / 2), yPos - height, amount);
+		drawName(g, xPos + (width / 2), yPos, name);
+		drawAmount(g, xPos + (width / 2), yPos - height, amount);
 	}
 
 	/*
 	 * Name under the Graph
 	 */
-	private void drawName(int xPos, int yPos, String name) {
-		Graphics g = getGraphics();
+	private void drawName(Graphics g, int xPos, int yPos, String name) {
 		g.setColor(Color.white);
 		for (char c : name.toCharArray()) {
 			yPos += 13;
-			xPos -= 1;
+			xPos += 1;
 			g.drawString("" + c, xPos, yPos);
 		}
 	}
@@ -143,34 +149,54 @@ public class DrawPanel extends JPanel {
 	/*
 	 * schreibt die summe beim jeweiligen graphen
 	 */
-
-	private ArrayList<String> getPawnList() {
-		ArrayList<String> pawns = new ArrayList<>();
-		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
-			for (Behaeltnis s : entry.getValue()) {
-				String pawn = String.valueOf(s.getPfand());
-				if (!pawns.contains(pawn)) {
-					pawns.add(pawn);
-				}
-			}
-		}
-		return pawns;
+	private void drawAmount(Graphics g, int xPos, int yPos, String amount) {
+		g.setColor(Color.yellow);
+		g.drawString(amount, xPos - (3 * amount.length()), yPos - 5);
 	}
 
-	private void drawObject(Map<String, ArrayList<Behaeltnis>> objectMap2, int bottomSpacing) {
-		super.paintComponent(this.getGraphics());
-		int width = this.getWidth() / objectMap2.size();
+	private void draw(Map<String, ArrayList<Behaeltnis>> map, int bottomSpacing) {
+		Graphics g = getGraphics();
+		super.paintComponent(g);
+		int width = this.getWidth() / map.size();
 		int whitespace = (int) (width * 0.2) + 1;
 		width -= whitespace;
 		int counter = 0;
 		// hier soll der graph enden
 		int graphBottom = (int) (this.getSize().getHeight() - (this.getSize().getHeight() / bottomSpacing));
-		for (Entry<String, ArrayList<Behaeltnis>> entry : objectMap2.entrySet()) {
-			int height = multiplayer * entry.getValue().size();
-			int xPos = whitespace + (whitespace * counter) + (width * counter);
-			drawGraph(xPos, graphBottom, width, height, String.valueOf(entry.getKey()),
+		int multiplier = calculateMultiplicator(map, bottomSpacing);
+		for (Entry<String, ArrayList<Behaeltnis>> entry : map.entrySet()) {
+			int height = multiplier * entry.getValue().size();
+			int xPos = whitespace + (whitespace * counter) + (width * counter) - 5;
+			drawGraph(g, xPos, graphBottom, width, height, String.valueOf(entry.getKey()),
 					String.valueOf(entry.getValue().size()));
 			counter++;
 		}
 	}
+
+	private int calculateMultiplicator(Map<String, ArrayList<Behaeltnis>> entry, int bottomSpacing) {
+		int multiplier = 10;
+		int maxSize = getMaxSize(entry);
+		int panelHight = this.getHeight() - bottomSpacing - 100;
+		int height = multiplier * maxSize;
+		while (height > panelHight) {
+			multiplier--;
+			height = multiplier * maxSize;
+		}
+		return multiplier;
+	}
+
+	private int getMaxSize(Map<String, ArrayList<Behaeltnis>> entry) {
+		int maxSize = 0;
+		for (Map.Entry<String, ArrayList<Behaeltnis>> m : entry.entrySet()) {
+			if (m.getValue().size() > maxSize) {
+				maxSize = m.getValue().size();
+			}
+		}
+		return maxSize;
+	}
+
+	public static void reset() {
+		panelInstance = new DrawPanel();
+	}
+
 }
