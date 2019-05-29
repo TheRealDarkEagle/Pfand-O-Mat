@@ -15,12 +15,7 @@ public class StateListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand() != "auswertung") {
-			exchangeState(e.getActionCommand());
-		} else {
-
-		}
-
+		exchangeState(e.getActionCommand());
 	}
 
 	private void exchangeState(String state) {
@@ -48,6 +43,8 @@ public class StateListener implements ActionListener {
 			PfandBon.getInstance().resetPfand();
 			Screen.getInstance().exchangeStatePanel(new StartPanel(lang));
 			break;
+		default:
+
 		}
 	}
 
