@@ -35,13 +35,11 @@ public class Writer {
 		try {
 			if (file.createNewFile()) {
 				this.id = 1000;
-				BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-				bw.write(String.format("%s;%s;%s;%s;%s", "id", "Art", "Marke", "Volumen", "Pfand"));
-				bw.newLine();
-				bw.flush();
-				bw.close();
+				try (BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsolutePath()))) {
+					bw.write(String.format("%s;%s;%s;%s;%s\r%n", "id", "Art", "Marke", "Volumen", "Pfand"));
+					bw.flush();
+				}
 			} else {
-				System.out.println("false");
 				Reader reader = new Reader(filepath);
 				this.id = reader.getNextId();
 			}

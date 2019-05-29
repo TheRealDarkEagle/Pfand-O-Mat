@@ -11,18 +11,22 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import control.listener.GraphListener;
 import view.panels.ButtonPanel;
-import view.panels.graphPanels.DrawPanel;
+import view.panels.graphpanels.DrawPanel;
 
 public class Auswertung extends JFrame {
 
-	public static final Dimension MAX = new Dimension(1200, 1000);
-	public static Auswertung instance;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7668987072300376408L;
+
+	private static Auswertung instance;
 
 	private GridBagConstraints c;
-	private GraphListener listener;
-	private final String[] attribute = { "ID" }; // , "ARTS", "BRANDS", "VOLUMEN", "PAWN" <- weitere attribute
+	private static final String[] attribute = { "ID", "ART", "BRAND" }; // , "ARTS", "BRANDS", "VOLUMEN", "PAWN" <-
+																		// weitere
+	// attribute
 	private DrawPanel drawArea;
 	private JPanel bar;
 	private JPanel foo;
@@ -42,12 +46,14 @@ public class Auswertung extends JFrame {
 	}
 
 	private void init() {
+		this.setPreferredSize(new Dimension(1100, 950));
+		this.setMinimumSize(new Dimension(1100, 950));
+		this.setMaximumSize(new Dimension(1100, 950));
 		bar = new JPanel(new GridBagLayout());
 		foo = new JPanel(new GridLayout(1, 0));
 		drawArea = DrawPanel.getInstance();
 		c = new GridBagConstraints();
 		this.setLayout(new GridLayout(1, 1));
-		listener = new GraphListener();
 	}
 
 	private void config() {
@@ -61,9 +67,13 @@ public class Auswertung extends JFrame {
 		foo.setBackground(Color.CYAN);
 		JButton exit = new JButton("EXIT");
 		JPanel endButtonPanel = new JPanel(new GridLayout(1, 1));
+		/*
+		 * @TODO: Exit listener überarbeiten! Frame schließt sich nicht durch exit
+		 */
 		exit.addActionListener(e -> {
-			this.dispose();
 			reset();
+			this.dispose();
+			this.setVisible(false);
 		});
 		JButton back = new JButton("BACK");
 		back.addActionListener(e -> {
@@ -100,7 +110,6 @@ public class Auswertung extends JFrame {
 	}
 
 	private void build() {
-		this.setSize(MAX);
 		this.add(bar, 0);
 		c.gridx = 0;
 		c.gridy = 10;
@@ -108,6 +117,8 @@ public class Auswertung extends JFrame {
 		this.add(foo, c);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocation(0, 0);
+		this.setVisible(true);
 		pack();
 	}
 
@@ -121,13 +132,12 @@ public class Auswertung extends JFrame {
 		buildBar(buttonText);
 		bar.repaint();
 		this.add(bar, 0);
-//		this.revalidate();
 		super.repaint();
 		pack();
 		this.setVisible(true);
 	}
 
-	private void reset() {
+	private static void reset() {
 		instance = new Auswertung();
 	}
 }

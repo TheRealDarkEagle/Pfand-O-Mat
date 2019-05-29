@@ -104,7 +104,6 @@ public class Screen extends JFrame {
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.addKeyListener(getAdminListener());
-//		this.setResizable(false);
 		this.setTitle("Pfann-O-Mat 2k.9");
 		this.setSize(600, 450);
 		this.setPreferredSize(dim);
@@ -156,9 +155,7 @@ public class Screen extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				System.out.println("Looking for this event: " + KeyEvent.VK_ASTERISK);
 				int key = e.getKeyCode();
-				System.out.println(key);
 				if (key == 521) {
 					Auswertung.getInstance().setVisible(true);
 				}
