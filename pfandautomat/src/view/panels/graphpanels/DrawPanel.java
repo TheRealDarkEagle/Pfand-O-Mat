@@ -6,10 +6,13 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.JPanel;
 
 import control.PropertyHandler;
+import model.Behaeltnis;
 import resources.reader.Reader;
 import resources.writer.Writer;
 
@@ -24,7 +27,7 @@ public class DrawPanel extends JPanel {
 	public static final Dimension PREFFEREDSIZE = new Dimension(1200, 1200);
 	public static final Dimension MAX_SIZE = new Dimension(1600, 1600);
 
-	private Map<String, ArrayList<String>> bonMap;
+	private Map<String, ArrayList<Behaeltnis>> objectMap;
 	private Reader reader;
 	private int multiplayer = 10;
 
@@ -41,43 +44,71 @@ public class DrawPanel extends JPanel {
 		this.setPreferredSize(PREFFEREDSIZE);
 		this.setMaximumSize(MAX_SIZE);
 		this.reader = new Reader(new Writer().getFilePath());
-		bonMap = reader.mapPfandBons();
+		objectMap = reader.getBonObjectMap();
+		int counter = 0;
+		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
+			counter += entry.getValue().size();
+			for (Behaeltnis b : entry.getValue()) {
+				System.out.printf("%s %s %s %s %n", b.getArt(), b.getBrand(), b.getVol(), b.getPfand());
+			}
+		}
+		System.out.println(counter);
 	}
 
 	public void drawID() {
-		draw(bonMap, 11);
-	}
-
-	private void draw(Map<String, ArrayList<String>> map, int bottomSpacing) {
-		super.paintComponent(this.getGraphics());
-		int width = this.getWidth() / map.size();
-		int whitespace = (int) (width * 0.2) + 1;
-		width -= whitespace;
-		int counter = 0;
-		// hier soll der graph enden
-		int graphBottom = (int) (this.getSize().getHeight() - (this.getSize().getHeight() / bottomSpacing));
-		for (Map.Entry<String, ArrayList<String>> entry : map.entrySet()) {
-			int height = multiplayer * entry.getValue().size();
-			int xPos = whitespace + (whitespace * counter) + (width * counter);
-			drawGraph(xPos, graphBottom, width, height, String.valueOf(entry.getKey()),
-					String.valueOf(entry.getValue().size()));
-			counter++;
-		}
+		drawObject(objectMap, 11);
 	}
 
 	public void drawArt() {
-		HashMap<String, ArrayList<String>> map = new HashMap<>();
-		map.put("Plastik", countItem("plastik"));
-		map.put("GLas", countItem("glas"));
-		map.put("Dose", countItem("dose"));
-		draw(map, 8);
+		HashMap<String, ArrayList<Behaeltnis>> map = new HashMap<>();
+		map.put("Plastik", countObjects("plastik"));
+		map.put("GLas", countObjects("glas"));
+		map.put("Dose", countObjects("dose"));
+		drawObject(map, 8);
 	}
 
-	private ArrayList<String> countItem(String item) {
-		ArrayList<String> items = new ArrayList<>();
-		for (Map.Entry<String, ArrayList<String>> entry : bonMap.entrySet()) {
-			for (String s : entry.getValue()) {
-				if (s.toLowerCase().contains(item.toLowerCase())) {
+	private void drawAmount(int xPos, int yPos, String amount) {
+		Graphics g = getGraphics();
+		g.setColor(Color.yellow);
+		g.drawString(amount, xPos - (3 * amount.length()), yPos - 5);
+	}
+
+	public void drawBrand() {
+		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
+		for (Map.Entry<Object, Object> entry : PropertyHandler.getBrand().entrySet()) {
+			String item = String.valueOf(entry.getValue());
+			map.put(item, countObjects(item));
+		}
+		drawObject(map, 5);
+	}
+
+	public void drawVolumen() {
+		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
+		for (Map.Entry<Object, Object> entry : PropertyHandler.getVolumen().entrySet()) {
+			String vol = String.valueOf(entry.getValue());
+			map.put(vol, countObjects(vol));
+		}
+		drawObject(map, 13);
+	}
+
+	public void drawPawn() {
+		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
+		ArrayList<String> pawnList = getPawnList();
+		for (String pawn : pawnList) {
+			for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
+
+				map.put(pawn, countObjects(pawn));
+			}
+		}
+//		draw(map, 15);
+		drawObject(map, 15);
+	}
+
+	private ArrayList<Behaeltnis> countObjects(String item) {
+		ArrayList<Behaeltnis> items = new ArrayList<>();
+		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
+			for (Behaeltnis s : entry.getValue()) {
+				if (s.toString().toLowerCase().contains(item.toLowerCase())) {
 					items.add(s);
 				}
 			}
@@ -103,7 +134,7 @@ public class DrawPanel extends JPanel {
 		Graphics g = getGraphics();
 		g.setColor(Color.white);
 		for (char c : name.toCharArray()) {
-			yPos += 12;
+			yPos += 13;
 			xPos -= 1;
 			g.drawString("" + c, xPos, yPos);
 		}
@@ -112,19 +143,34 @@ public class DrawPanel extends JPanel {
 	/*
 	 * schreibt die summe beim jeweiligen graphen
 	 */
-	private void drawAmount(int xPos, int yPos, String amount) {
-		Graphics g = getGraphics();
-		g.setColor(Color.yellow);
-		g.drawString(amount, xPos - (3 * amount.length()), yPos - 5);
-	}
 
-	public void drawBrand() {
-		HashMap<String, ArrayList<String>> map = new HashMap<>();
-		for (Map.Entry<Object, Object> entry : PropertyHandler.getBrand().entrySet()) {
-			String item = String.valueOf(entry.getValue());
-			map.put(item, countItem(item));
+	private ArrayList<String> getPawnList() {
+		ArrayList<String> pawns = new ArrayList<>();
+		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
+			for (Behaeltnis s : entry.getValue()) {
+				String pawn = String.valueOf(s.getPfand());
+				if (!pawns.contains(pawn)) {
+					pawns.add(pawn);
+				}
+			}
 		}
-		draw(map, 5);
+		return pawns;
 	}
 
+	private void drawObject(Map<String, ArrayList<Behaeltnis>> objectMap2, int bottomSpacing) {
+		super.paintComponent(this.getGraphics());
+		int width = this.getWidth() / objectMap2.size();
+		int whitespace = (int) (width * 0.2) + 1;
+		width -= whitespace;
+		int counter = 0;
+		// hier soll der graph enden
+		int graphBottom = (int) (this.getSize().getHeight() - (this.getSize().getHeight() / bottomSpacing));
+		for (Entry<String, ArrayList<Behaeltnis>> entry : objectMap2.entrySet()) {
+			int height = multiplayer * entry.getValue().size();
+			int xPos = whitespace + (whitespace * counter) + (width * counter);
+			drawGraph(xPos, graphBottom, width, height, String.valueOf(entry.getKey()),
+					String.valueOf(entry.getValue().size()));
+			counter++;
+		}
+	}
 }

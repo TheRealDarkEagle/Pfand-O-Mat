@@ -45,4 +45,9 @@ public abstract class Behaeltnis implements ILiquidContainer {
 		return this.art;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s %s %s %s", this.getArt(), this.getBrand(), this.getVol(), this.getPfand());
+	}
+
 }

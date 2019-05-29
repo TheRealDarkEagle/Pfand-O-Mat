@@ -14,7 +14,12 @@ public class GraphListener {
 			return e -> DrawPanel.getInstance().drawArt();
 		case "BRAND":
 			return e -> DrawPanel.getInstance().drawBrand();
+		case "VOLUMEN":
+			return e -> DrawPanel.getInstance().drawVolumen();
+		case "PAWN":
+			return e -> DrawPanel.getInstance().drawPawn();
 		default:
+
 		}
 		return null;
 	}

@@ -24,8 +24,10 @@ public class Auswertung extends JFrame {
 	private static Auswertung instance;
 
 	private GridBagConstraints c;
-	private static final String[] attribute = { "ID", "ART", "BRAND" }; // , "ARTS", "BRANDS", "VOLUMEN", "PAWN" <-
-																		// weitere
+	private static final String[] attribute = { "ID", "ART", "BRAND", "VOLUMEN", "PAWN" }; // , "ARTS", "BRANDS",
+																							// "VOLUMEN",
+	// "PAWN" <-
+	// weitere
 	// attribute
 	private DrawPanel drawArea;
 	private JPanel bar;

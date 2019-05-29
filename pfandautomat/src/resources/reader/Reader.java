@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import model.Behaeltnis;
+import model.Dose;
+import model.Glas;
+import model.Plastik;
+
 public class Reader {
 
 	private String filepath;
@@ -55,9 +60,8 @@ public class Reader {
 	public Map<String, ArrayList<String>> mapPfandBons() {
 		TreeMap<String, ArrayList<String>> map = new TreeMap<>();
 		for (String s : csvEntrys) {
-			int firstSemi = s.indexOf("" + ';');
-			String id = String.valueOf(Integer.parseInt(s.substring(0, firstSemi)));
-			String entry = s.substring(firstSemi + 1);
+			String id = getID(s);
+			String entry = getEntry(s);
 			if (map.containsKey(id)) {
 				ArrayList<String> list = map.get(id);
 				list.add(entry);
@@ -68,6 +72,26 @@ public class Reader {
 			}
 
 		}
+		return map;
+	}
+
+	private String getID(String entry) {
+		return String.valueOf(Integer.parseInt(entry.substring(0, entry.indexOf("" + ';'))));
+	}
+
+	private String getEntry(String entry) {
+		return entry.substring(entry.indexOf("" + ';') + 1);
+	}
+
+	public Map<String, ArrayList<Behaeltnis>> getBonObjectMap() {
+		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
+		for (String s : csvEntrys) {
+			String id = getID(s);
+			Behaeltnis bottle = getObject(getEntry(s));
+			map.putIfAbsent(id, new ArrayList<Behaeltnis>());
+			map.get(id).add(bottle);
+		}
+
 		return map;
 	}
 
@@ -87,6 +111,27 @@ public class Reader {
 			id[counter++] = String.valueOf(entry.getKey());
 		}
 		return id;
+	}
+
+	// double pfand, String brand, double vol, String art
+	private Behaeltnis getObject(String data) {
+		int firstSemi = data.indexOf("" + ';');
+		int secondSemi = data.indexOf("" + ';', firstSemi + 1);
+		String brand = data.substring(firstSemi + 1, secondSemi);
+		double vol = Double.parseDouble(
+				data.substring(secondSemi + 1, data.indexOf("" + ';', secondSemi + 1)).replaceAll(",", "."));
+		if (data.toLowerCase().contains("plastik")) {
+			return new Plastik(brand, vol);
+		} else if (data.toLowerCase().contains("glas")) {
+			if (data.contains("0,08")) {
+				return new Glas(false, brand, vol);
+			} else {
+				return new Glas(true, brand, vol);
+			}
+		} else if (data.toLowerCase().contains("dose")) {
+			return new Dose(brand, vol);
+		}
+		return null;
 	}
 
 }
