@@ -26,9 +26,15 @@ public class DrawPanel extends JPanel {
 	public static final Dimension MIN_SIZE = new Dimension(1000, 800);
 	public static final Dimension PREFFEREDSIZE = new Dimension(1200, 1200);
 	public static final Dimension MAX_SIZE = new Dimension(1600, 1600);
+	private Color nameColor;
+	private Color pillarColor;
+	private Color idColor;
+	private Color panelColor;
 
 	private Map<String, ArrayList<Behaeltnis>> objectMap;
+	private Map<String, ArrayList<Behaeltnis>> activeMap;
 	private Reader reader;
+	private int bottomSpacing;
 
 	public static DrawPanel getInstance() {
 		if (panelInstance == null) {
@@ -37,8 +43,12 @@ public class DrawPanel extends JPanel {
 		return panelInstance;
 	}
 
+	/*
+	 * Constructor
+	 */
 	private DrawPanel() {
-		this.setBackground(Color.black);
+		initColors();
+		this.setBackground(panelColor);
 		this.setMinimumSize(MIN_SIZE);
 		this.setPreferredSize(PREFFEREDSIZE);
 		this.setMaximumSize(MAX_SIZE);
@@ -46,6 +56,19 @@ public class DrawPanel extends JPanel {
 		objectMap = reader.getBonObjectMap();
 	}
 
+	/*
+	 * Setting up all the needed Colors
+	 */
+	private void initColors() {
+		setNameColor(Color.orange);
+		setPillarColor(Color.red);
+		setIdColor(Color.white);
+		setPanelColor(Color.black);
+	}
+
+	/*
+	 * For a visuell Map-Output
+	 */
 	private void visuellOutput(Map<String, ArrayList<Behaeltnis>> map) {
 		System.out.println("[STARTING MAP OUTPUT");
 		for (Entry<String, ArrayList<Behaeltnis>> entry : map.entrySet()) {
@@ -57,36 +80,57 @@ public class DrawPanel extends JPanel {
 		System.out.println("[ENDING] MAP OUTPUT");
 	}
 
+	/*
+	 * Sorted by id (Actually it just sets the BottomSpacing for the Graph and gives
+	 * the standartObjectMap to the Draw Funktion)
+	 */
 	public void drawID() {
-		draw(objectMap, 11);
+		bottomSpacing = 11;
+		draw(objectMap);
 	}
 
+	/*
+	 * Sorts the Map after allowed Bottle types
+	 */
 	public void drawArt() {
 		HashMap<String, ArrayList<Behaeltnis>> map = new HashMap<>();
-		map.put("Plastik", countObjects("plastik"));
-		map.put("GLas", countObjects("glas"));
-		map.put("Dose", countObjects("dose"));
-		draw(map, 8);
+		for (Map.Entry<Object, Object> entry : PropertyHandler.allowedTypes().entrySet()) {
+			String item = String.valueOf(entry.getKey());
+			map.put(item, countObjects(item));
+		}
+		bottomSpacing = 8;
+		draw(map);
 	}
 
+	/*
+	 * Sorts the Map after allowed Brands
+	 */
 	public void drawBrand() {
 		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
 		for (Map.Entry<Object, Object> entry : PropertyHandler.getBrand().entrySet()) {
 			String item = String.valueOf(entry.getValue());
 			map.put(item, countObjects(item));
 		}
-		draw(map, 5);
+		bottomSpacing = 5;
+		draw(map);
 	}
 
+	/*
+	 * Sorts the map after the Volumen
+	 */
 	public void drawVolumen() {
 		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
 		for (Map.Entry<Object, Object> entry : PropertyHandler.getVolumen().entrySet()) {
 			String vol = String.valueOf(entry.getValue());
 			map.put(vol, countObjects(vol));
 		}
-		draw(map, 13);
+		bottomSpacing = 13;
+		draw(map);
 	}
 
+	/*
+	 * Sorts the Map after the Pawn
+	 */
 	public void drawPawn() {
 		TreeMap<String, ArrayList<Behaeltnis>> map = new TreeMap<>();
 		ArrayList<String> pawnList = getPawnList();
@@ -96,9 +140,14 @@ public class DrawPanel extends JPanel {
 				map.put(pawn, countObjects(pawn));
 			}
 		}
-		draw(map, 15);
+		bottomSpacing = 15;
+		draw(map);
 	}
 
+	/*
+	 * Looks through the ObjectMap and gives a ArrayList<String> with all occured
+	 * pawn-Values back
+	 */
 	private ArrayList<String> getPawnList() {
 		ArrayList<String> pawns = new ArrayList<>();
 		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
@@ -112,6 +161,10 @@ public class DrawPanel extends JPanel {
 		return pawns;
 	}
 
+	/*
+	 * Looks through the ObjectMap and counts all objects, which has the searched
+	 * Item in it
+	 */
 	private ArrayList<Behaeltnis> countObjects(String item) {
 		ArrayList<Behaeltnis> items = new ArrayList<>();
 		for (Map.Entry<String, ArrayList<Behaeltnis>> entry : objectMap.entrySet()) {
@@ -128,7 +181,7 @@ public class DrawPanel extends JPanel {
 	 * Methode welche den kompletten Graphen zeichnet (summe + graph + id)
 	 */
 	private void drawGraph(Graphics g, int xPos, int yPos, int width, int height, String name, String amount) {
-		g.setColor(Color.red);
+		g.setColor(pillarColor);
 		g.fillRect(xPos, yPos - height, width, height);
 		drawName(g, xPos + (width / 2), yPos, name);
 		drawAmount(g, xPos + (width / 2), yPos - height, amount);
@@ -138,11 +191,11 @@ public class DrawPanel extends JPanel {
 	 * Name under the Graph
 	 */
 	private void drawName(Graphics g, int xPos, int yPos, String name) {
-		g.setColor(Color.white);
-		for (char c : name.toCharArray()) {
+		g.setColor(idColor);
+		for (Character c : name.toCharArray()) {
 			yPos += 13;
-			xPos += 1;
-			g.drawString("" + c, xPos, yPos);
+//			xPos += 1;
+			g.drawString("" + c.toUpperCase(c), xPos, yPos);
 		}
 	}
 
@@ -150,29 +203,48 @@ public class DrawPanel extends JPanel {
 	 * schreibt die summe beim jeweiligen graphen
 	 */
 	private void drawAmount(Graphics g, int xPos, int yPos, String amount) {
-		g.setColor(Color.yellow);
+		g.setColor(nameColor);
 		g.drawString(amount, xPos - (3 * amount.length()), yPos - 5);
 	}
 
-	private void draw(Map<String, ArrayList<Behaeltnis>> map, int bottomSpacing) {
+	/*
+	 *
+	 */
+	private void draw(Map<String, ArrayList<Behaeltnis>> map) {
+		activeMap = map;
 		Graphics g = getGraphics();
+		paintComponent(g);
+		repaint();
+
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		if (activeMap == null) {
+			return;
+		}
+		this.setBackground(panelColor);
 		super.paintComponent(g);
-		int width = this.getWidth() / map.size();
+		int width = this.getWidth() / activeMap.size();
 		int whitespace = (int) (width * 0.2) + 1;
 		width -= whitespace;
 		int counter = 0;
 		// hier soll der graph enden
 		int graphBottom = (int) (this.getSize().getHeight() - (this.getSize().getHeight() / bottomSpacing));
-		int multiplier = calculateMultiplicator(map, bottomSpacing);
-		for (Entry<String, ArrayList<Behaeltnis>> entry : map.entrySet()) {
+		int multiplier = calculateMultiplicator(activeMap, bottomSpacing);
+		for (Entry<String, ArrayList<Behaeltnis>> entry : activeMap.entrySet()) {
 			int height = multiplier * entry.getValue().size();
-			int xPos = whitespace + (whitespace * counter) + (width * counter) - 5;
+			int xPos = whitespace / 2 + (whitespace * counter) + (width * counter);
 			drawGraph(g, xPos, graphBottom, width, height, String.valueOf(entry.getKey()),
 					String.valueOf(entry.getValue().size()));
 			counter++;
 		}
 	}
 
+	/*
+	 * Calculates how high the Multiplikator can be before the Graph is out of the
+	 * Screen.
+	 */
 	private int calculateMultiplicator(Map<String, ArrayList<Behaeltnis>> entry, int bottomSpacing) {
 		int multiplier = 10;
 		int maxSize = getMaxSize(entry);
@@ -185,6 +257,9 @@ public class DrawPanel extends JPanel {
 		return multiplier;
 	}
 
+	/*
+	 * looks through the Map for the Highest entrys.
+	 */
 	private int getMaxSize(Map<String, ArrayList<Behaeltnis>> entry) {
 		int maxSize = 0;
 		for (Map.Entry<String, ArrayList<Behaeltnis>> m : entry.entrySet()) {
@@ -197,6 +272,39 @@ public class DrawPanel extends JPanel {
 
 	public static void reset() {
 		panelInstance = new DrawPanel();
+	}
+
+	// -------------------- GETTER AND SETTER -------------------
+	public Color getNameColor() {
+		return nameColor;
+	}
+
+	public void setNameColor(Color nameColor) {
+		this.nameColor = nameColor;
+	}
+
+	public Color getPillarColor() {
+		return pillarColor;
+	}
+
+	public void setPillarColor(Color pillarColor) {
+		this.pillarColor = pillarColor;
+	}
+
+	public Color getIdColor() {
+		return idColor;
+	}
+
+	public void setIdColor(Color idColor) {
+		this.idColor = idColor;
+	}
+
+	public Color getPanelColor() {
+		return panelColor;
+	}
+
+	public void setPanelColor(Color panelColor) {
+		this.panelColor = panelColor;
 	}
 
 }

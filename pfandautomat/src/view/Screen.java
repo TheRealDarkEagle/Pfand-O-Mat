@@ -155,8 +155,7 @@ public class Screen extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-				if (key == 521) {
+				if (e.getKeyCode() == 521) {
 					Auswertung.getInstance().setVisible(true);
 				}
 			}

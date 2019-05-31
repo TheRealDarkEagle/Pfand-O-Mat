@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import view.menubar.MenuBar;
 import view.panels.ButtonPanel;
 import view.panels.graphpanels.DrawPanel;
 
@@ -26,6 +27,7 @@ public class Auswertung extends JFrame {
 	private DrawPanel drawArea;
 	private JPanel bar;
 	private JPanel foo;
+	private MenuBar menubar;
 
 	public static Auswertung getInstance() {
 		if (instance == null) {
@@ -45,6 +47,7 @@ public class Auswertung extends JFrame {
 		this.setPreferredSize(new Dimension(1100, 950));
 		this.setMinimumSize(new Dimension(1100, 950));
 		this.setMaximumSize(new Dimension(1100, 950));
+		menubar = new MenuBar();
 		bar = new JPanel(new GridBagLayout()); // seitliche buttons und drawArea
 		foo = new JPanel(new GridLayout(1, 0)); // Buttons um unteren ende
 		drawArea = DrawPanel.getInstance();
@@ -102,6 +105,7 @@ public class Auswertung extends JFrame {
 	}
 
 	private void build() {
+		this.setJMenuBar(menubar);
 		this.add(bar, 0);
 		c.gridx = 0;
 		c.gridy = 10;

@@ -19,8 +19,7 @@ public class GraphListener {
 		case "PAWN":
 			return e -> DrawPanel.getInstance().drawPawn();
 		default:
-
+			return null;
 		}
-		return null;
 	}
 }
